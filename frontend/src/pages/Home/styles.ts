@@ -34,7 +34,7 @@ export const Header = styled.header`
 `
 
 type ListContainerStyleProps = {
-  orderBy: 'asc' | 'desc'
+  $orderBy: 'asc' | 'desc'
 }
 
 export const ListContainer = styled.div<ListContainerStyleProps>`
@@ -55,7 +55,7 @@ export const ListContainer = styled.div<ListContainerStyleProps>`
 
     & > img {
       animation: ${(props) =>
-          props.orderBy === 'desc' ? rotateAndBounce : rotateAndBounceBack}
+          props.$orderBy === 'desc' ? rotateAndBounce : rotateAndBounceBack}
         0.2s forwards;
     }
   }

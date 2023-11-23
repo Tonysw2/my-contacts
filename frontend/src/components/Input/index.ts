@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components'
 
 export type Props = {
-  error?: boolean
-  variant: 'search' | 'default'
+  $error?: boolean
+  $variant: 'search' | 'default'
 }
 
 export const Input = styled.input<Props>`
@@ -22,8 +22,8 @@ export const Input = styled.input<Props>`
   outline: none;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.04);
   border: 2px solid transparent;
-  border-radius: ${({ theme, variant }) =>
-    variant === 'default' ? theme.radii.base : theme.radii.lg};
+  border-radius: ${({ theme, $variant }) =>
+    $variant === 'default' ? theme.radii.base : theme.radii.lg};
 
   transition: border-color 0.2s ease-in;
 
@@ -36,7 +36,7 @@ export const Input = styled.input<Props>`
   }
 
   ${(props) =>
-    props.error &&
+    props.$error &&
     css`
       color: ${props.theme.colors.danger.main};
       border-color: ${props.theme.colors.danger.main} !important;

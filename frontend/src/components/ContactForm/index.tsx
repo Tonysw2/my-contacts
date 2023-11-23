@@ -52,17 +52,14 @@ export function ContactForm({ buttonLabel }: Props) {
   }
 
   return (
-    <Form
-      noValidate
-      onSubmit={handleSubmit}
-    >
+    <Form noValidate onSubmit={handleSubmit}>
       <FormGroup errorMessage={getErrorMessageByFiled('name')}>
         <Input
           value={name}
-          variant="default"
+          $variant="default"
           placeholder="Nome *"
           onChange={handleNameChange}
-          error={!!getErrorMessageByFiled('name')}
+          $error={!!getErrorMessageByFiled('name')}
         />
       </FormGroup>
 
@@ -70,10 +67,10 @@ export function ContactForm({ buttonLabel }: Props) {
         <Input
           type="email"
           value={email}
-          variant="default"
+          $variant="default"
           placeholder="E-mail"
           onChange={handleEmailChange}
-          error={!!getErrorMessageByFiled('email')}
+          $error={!!getErrorMessageByFiled('email')}
         />
       </FormGroup>
 
@@ -81,7 +78,7 @@ export function ContactForm({ buttonLabel }: Props) {
         <Input
           type="tel"
           value={phone}
-          variant="default"
+          $variant="default"
           placeholder="Telefone"
           onChange={handlePhoneChange}
           maxLength={15}
@@ -99,10 +96,7 @@ export function ContactForm({ buttonLabel }: Props) {
       </FormGroup>
 
       <ButtonContainer>
-        <Button
-          type="submit"
-          disabled={!isFormValid}
-        >
+        <Button type="submit" disabled={!isFormValid}>
           {buttonLabel}
         </Button>
       </ButtonContainer>

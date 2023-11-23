@@ -54,7 +54,7 @@ export function Home() {
 
       <Input
         type="text"
-        variant="search"
+        $variant="search"
         placeholder="Procure por um nome..."
         onChange={handleChangeSearchTerm}
       />
@@ -67,7 +67,7 @@ export function Home() {
         <Link to="/new">Novo contato</Link>
       </Header>
 
-      <ListContainer orderBy={orderBy}>
+      <ListContainer $orderBy={orderBy}>
         <header>
           <button type="button" onClick={handleToggleOrderBy}>
             <span>Nome</span>
