@@ -1,4 +1,4 @@
-import { HttpClient } from './utils/httpClient'
+import { HttpClient } from './utils/HttpClient'
 
 class ContactsService {
   private httpClient: HttpClient
@@ -8,7 +8,7 @@ class ContactsService {
   }
 
   async listContacts(orderBy = 'asc') {
-    return this.httpClient.get(`/contacts?orderBy=${orderBy}`)
+    return this.httpClient.get(`/contactss?orderBy=${orderBy}`)
   }
 }
 
