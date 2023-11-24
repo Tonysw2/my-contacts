@@ -2,12 +2,19 @@ import styled, { keyframes } from 'styled-components'
 
 export const Container = styled.div``
 
-export const Header = styled.header`
+type HeaderStyleProps = {
+  $justifyContent: string
+}
+
+export const Header = styled.header<HeaderStyleProps>`
   margin-top: 3.2rem;
+  padding-bottom: 1.6rem;
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${(props) => props.$justifyContent};
+
+  border-bottom: 2px solid ${(props) => props.theme.colors.gray['300']};
 
   & > strong {
     font-size: 2.4rem;
@@ -29,6 +36,24 @@ export const Header = styled.header`
     &:hover {
       background-color: ${({ theme }) => theme.colors.primary.main};
       color: ${({ theme }) => theme.colors.gray['100']};
+    }
+  }
+`
+
+export const ErrorContainer = styled.div`
+  margin-top: 1.6rem;
+
+  display: flex;
+  align-items: center;
+
+  .details {
+    margin-left: 2.4rem;
+
+    & > strong {
+      margin-bottom: 0.8rem;
+      display: block;
+      font-size: 2.2rem;
+      color: ${(props) => props.theme.colors.danger.main};
     }
   }
 `

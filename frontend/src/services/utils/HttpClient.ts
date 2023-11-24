@@ -1,3 +1,4 @@
+import { APIError } from '../../errors/APIError'
 import { delay } from '../../utils/delay'
 
 export class HttpClient {
@@ -8,8 +9,20 @@ export class HttpClient {
   }
 
   async get(path: string) {
-    const res = await fetch(`${this.baseUrl}${path}`)
     await delay(500)
-    return res.json()
+
+    const res = await fetch(`${this.baseUrl}${path}`)
+
+    let body = null
+    const contentType = res.headers.get('content-type')
+    if (contentType?.includes('application/json')) {
+      body = await res.json()
+    }
+
+    if (res.ok) {
+      return body
+    }
+
+    throw new APIError(res, body)
   }
 }
