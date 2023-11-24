@@ -39,7 +39,7 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
 
-  position: absolute;
+  position: fixed;
   inset: 0;
   background-color: rgba(246, 245, 252, 0.7);
 
