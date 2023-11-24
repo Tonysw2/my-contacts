@@ -86,6 +86,37 @@ export const ListContainer = styled.div<ListContainerStyleProps>`
   }
 `
 
+export const EmptyListContainer = styled.div`
+  margin-top: 1.6rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+
+  & > p {
+    text-align: center;
+    color: ${(props) => props.theme.colors.gray['300']};
+
+    & > strong {
+      color: ${(props) => props.theme.colors.primary.main};
+    }
+  }
+`
+
+export const SearchNotFoundContainer = styled.div`
+  margin-top: 1.6rem;
+  display: flex;
+  align-items: flex-start;
+
+  & > span {
+    margin-left: 2.4rem;
+    word-break: break-word;
+    color: ${(props) => props.theme.colors.gray['300']};
+  }
+`
+
 export const List = styled.ul`
   margin-top: 0.8rem;
 

@@ -1,23 +1,27 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import EmptyBoxSVG from '../../assets/empty-box.svg'
 import ArrowSVG from '../../assets/icons/arrow.svg'
 import EditSVG from '../../assets/icons/edit.svg'
 import DeleteSVG from '../../assets/icons/trash.svg'
+import MagnifySVG from '../../assets/magnifier-question.svg'
 import SadSVG from '../../assets/sad.svg'
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { Loader } from '../../components/Loader'
 import { ContactDTO } from '../../dtos/ContactDTO'
+import ContactsService from '../../services/ContactsService'
 import { formatPhone } from '../../utils/formatPhone'
 import {
   Card,
   Container,
+  EmptyListContainer,
   ErrorContainer,
   Header,
   List,
   ListContainer,
+  SearchNotFoundContainer,
 } from './styles'
-import ContactsService from '../../services/ContactsService'
 
 export function Home() {
   const [contacts, setContacts] = useState<ContactDTO[]>([])
@@ -67,7 +71,7 @@ export function Home() {
     <Container>
       <Loader isLoading={isLoading} />
 
-      {contacts.length > 0 && (
+      {!hasError && contacts.length > 0 && (
         <Input
           type="text"
           $variant="search"
@@ -85,7 +89,7 @@ export function Home() {
               : 'center'
         }
       >
-        {!hasError && contacts.length > 0 && (
+        {!hasError && contacts.length > 0 && filteredContacts.length > 0 && (
           <strong>
             {filteredContacts.length}{' '}
             {filteredContacts.length === 1 ? 'contato' : 'contatos'}
@@ -103,6 +107,27 @@ export function Home() {
             <Button onClick={handleTryAgain}>Tentar novamente</Button>
           </div>
         </ErrorContainer>
+      )}
+
+      {!hasError && contacts.length > 0 && filteredContacts.length < 1 && (
+        <SearchNotFoundContainer>
+          <img src={MagnifySVG} alt="Magnify question" />
+          <span>
+            Nenhum resultado foi encontrado para <strong>”{searchTerm}”</strong>
+            .
+          </span>
+        </SearchNotFoundContainer>
+      )}
+
+      {!hasError && contacts.length < 1 && (
+        <EmptyListContainer>
+          <img src={EmptyBoxSVG} alt="Empty box" />
+          <p>
+            Você ainda não tem nenhum contato cadastrado! <br /> Clique no botão
+            <strong> ”Novo contato”</strong> à cima para <br /> cadastrar o seu
+            primeiro!
+          </p>
+        </EmptyListContainer>
       )}
 
       {!hasError && filteredContacts.length > 0 && (
