@@ -1,12 +1,14 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { CategoryDTO } from '../../dtos/CategoryDTO'
+import { useErrors } from '../../hooks/useErrors'
+import CategoriesService from '../../services/CategoriesService'
+import { formatPhone } from '../../utils/formatPhone'
+import { isEmailValid } from '../../utils/isEmailValid'
 import { Button } from '../Button'
 import { FormGroup } from '../FormGroup'
 import { Input } from '../Input'
 import { Select } from '../Select'
 import { ButtonContainer, Form } from './styles'
-import { isEmailValid } from '../../utils/isEmailValid'
-import { useErrors } from '../../hooks/useErrors'
-import { formatPhone } from '../../utils/formatPhone'
 
 type Props = {
   buttonLabel: string
@@ -16,11 +18,25 @@ export function ContactForm({ buttonLabel }: Props) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [category, setCategory] = useState('')
+  const [categoryId, setCategoryId] = useState('')
+  const [categories, setCategories] = useState<CategoryDTO[]>([])
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
   const { errors, setError, removeError, getErrorMessageByFiled } = useErrors()
-  console.log(errors)
 
-  const isFormValid = name && errors.length === 0
+  useEffect(() => {
+    loadCategories()
+  }, [])
+
+  async function loadCategories() {
+    try {
+      setIsLoadingCategories(true)
+      const categoriesList = await CategoriesService.listCategories()
+      setCategories(categoriesList)
+    } catch {
+    } finally {
+      setIsLoadingCategories(false)
+    }
+  }
 
   function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
     setName(event.target.value)
@@ -48,8 +64,10 @@ export function ContactForm({ buttonLabel }: Props) {
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    console.log({ event, name, email, phone, category })
+    console.log({ name, email, phone, categoryId })
   }
+
+  const isFormValid = name && errors.length === 0
 
   return (
     <Form noValidate onSubmit={handleSubmit}>
@@ -85,13 +103,20 @@ export function ContactForm({ buttonLabel }: Props) {
         />
       </FormGroup>
 
-      <FormGroup>
+      <FormGroup isLoading={isLoadingCategories}>
         <Select
-          value={category}
+          value={categoryId}
           placeholder="Categoria"
-          onChange={(event) => setCategory(event.target.value)}
+          disabled={isLoadingCategories}
+          onChange={(event) => setCategoryId(event.target.value)}
         >
-          <option value="instagram">Instagram</option>
+          <option value="">Sem categoria</option>
+
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
         </Select>
       </FormGroup>
 
