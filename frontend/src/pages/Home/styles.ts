@@ -64,6 +64,7 @@ type ListContainerStyleProps = {
 
 export const ListContainer = styled.div<ListContainerStyleProps>`
   margin-top: 2.4rem;
+  padding-bottom: 2.4rem;
 
   & > header > button[type='button'] {
     background-color: transparent;
