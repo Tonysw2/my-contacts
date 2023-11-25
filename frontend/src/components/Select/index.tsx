@@ -31,7 +31,8 @@ export const Select = styled.select`
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.gray['200']};
-    border-color: ${({ theme }) => theme.colors.gray['400']};
+    border-color: ${({ theme }) => theme.colors.gray['300']};
+    opacity: 1;
   }
 
   option {

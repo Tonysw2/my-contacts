@@ -1,10 +1,10 @@
 import styled, { css } from 'styled-components'
 
-type Props = {
-  danger?: boolean
+export type ButtonStyleProps = {
+  $danger?: boolean
 }
 
-export const Button = styled.button<Props>`
+export const StyledButton = styled.button<ButtonStyleProps>`
   height: 5.2rem;
   padding: 0 1.6rem;
 
@@ -35,7 +35,7 @@ export const Button = styled.button<Props>`
   }
 
   ${(props) =>
-    props.danger &&
+    props.$danger &&
     css`
       background-color: ${props.theme.colors.danger.main};
 

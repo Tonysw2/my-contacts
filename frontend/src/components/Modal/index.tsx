@@ -14,17 +14,11 @@ export function Modal({ danger }: Props) {
         <p>description</p>
 
         <Footer>
-          <button
-            type="button"
-            className="cancel-btn"
-          >
+          <button type="button" className="cancel-btn">
             Cancelar
           </button>
 
-          <Button
-            danger={danger}
-            type="button"
-          >
+          <Button $danger={danger} type="button">
             Deletar
           </Button>
         </Footer>

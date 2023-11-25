@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { CategoryDTO } from '../../dtos/CategoryDTO'
+import { ContactDTO } from '../../dtos/ContactDTO'
 import { useErrors } from '../../hooks/useErrors'
 import CategoriesService from '../../services/CategoriesService'
 import { formatPhone } from '../../utils/formatPhone'
@@ -8,12 +9,14 @@ import { Button } from '../Button'
 import { FormGroup } from '../FormGroup'
 import { Input } from '../Input'
 import { Select } from '../Select'
+import { Spinner } from '../Spinner'
 import { ButtonContainer, Form } from './styles'
-import { ContactDTO } from '../../dtos/ContactDTO'
 
 type Props = {
   buttonLabel: string
-  onSubmit: (formData: Omit<ContactDTO, 'id' | 'category_name'>) => void
+  onSubmit: (
+    formData: Omit<ContactDTO, 'id' | 'category_name'>,
+  ) => Promise<void>
 }
 
 export function ContactForm({ buttonLabel, onSubmit }: Props) {
@@ -21,6 +24,7 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [categoryId, setCategoryId] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [categories, setCategories] = useState<CategoryDTO[]>([])
   const [isLoadingCategories, setIsLoadingCategories] = useState(true)
   const { errors, setError, removeError, getErrorMessageByFiled } = useErrors()
@@ -42,7 +46,9 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    onSubmit({ name, email, phone, category_id: categoryId })
+    setIsSubmitting(true)
+    await onSubmit({ name, email, phone, category_id: categoryId })
+    setIsSubmitting(false)
   }
 
   function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -79,6 +85,7 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
           $variant="default"
           placeholder="Nome *"
           onChange={handleNameChange}
+          disabled={isSubmitting}
           $error={!!getErrorMessageByFiled('name')}
         />
       </FormGroup>
@@ -89,6 +96,7 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
           value={email}
           $variant="default"
           placeholder="E-mail"
+          disabled={isSubmitting}
           onChange={handleEmailChange}
           $error={!!getErrorMessageByFiled('email')}
         />
@@ -100,6 +108,7 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
           value={phone}
           $variant="default"
           placeholder="Telefone"
+          disabled={isSubmitting}
           onChange={handlePhoneChange}
           maxLength={15}
         />
@@ -109,7 +118,7 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
         <Select
           value={categoryId}
           placeholder="Categoria"
-          disabled={isLoadingCategories}
+          disabled={isLoadingCategories || isSubmitting}
           onChange={(event) => setCategoryId(event.target.value)}
         >
           <option value="">Sem categoria</option>
@@ -123,8 +132,9 @@ export function ContactForm({ buttonLabel, onSubmit }: Props) {
       </FormGroup>
 
       <ButtonContainer>
-        <Button type="submit" disabled={!isFormValid}>
-          {buttonLabel}
+        <Button type="submit" disabled={!isFormValid || isSubmitting}>
+          {!isSubmitting && buttonLabel}
+          {isSubmitting && <Spinner $size={16} />}
         </Button>
       </ButtonContainer>
     </Form>
