@@ -8,7 +8,7 @@ class CategoriesService {
   }
 
   async listCategories() {
-    return this.httpClient.get('/categories')
+    return this.httpClient.get({ path: '/categories' })
   }
 }
 
