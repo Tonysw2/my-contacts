@@ -9,12 +9,14 @@ import { FormGroup } from '../FormGroup'
 import { Input } from '../Input'
 import { Select } from '../Select'
 import { ButtonContainer, Form } from './styles'
+import { ContactDTO } from '../../dtos/ContactDTO'
 
 type Props = {
   buttonLabel: string
+  onSubmit: (formData: Omit<ContactDTO, 'id' | 'category_name'>) => void
 }
 
-export function ContactForm({ buttonLabel }: Props) {
+export function ContactForm({ buttonLabel, onSubmit }: Props) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -36,6 +38,11 @@ export function ContactForm({ buttonLabel }: Props) {
     } finally {
       setIsLoadingCategories(false)
     }
+  }
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault()
+    onSubmit({ name, email, phone, category_id: categoryId })
   }
 
   function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -60,11 +67,6 @@ export function ContactForm({ buttonLabel }: Props) {
 
   function handlePhoneChange(event: ChangeEvent<HTMLInputElement>) {
     setPhone(formatPhone(event.target.value))
-  }
-
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault()
-    console.log({ name, email, phone, categoryId })
   }
 
   const isFormValid = name && errors.length === 0

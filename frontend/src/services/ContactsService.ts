@@ -1,3 +1,4 @@
+import { ContactDTO } from '../dtos/ContactDTO'
 import { HttpClient } from './utils/HttpClient'
 
 class ContactsService {
@@ -8,7 +9,16 @@ class ContactsService {
   }
 
   async listContacts(orderBy = 'asc') {
-    return this.httpClient.get(`/contacts?orderBy=${orderBy}`)
+    return this.httpClient.get({ path: `/contacts?orderBy=${orderBy}` })
+  }
+
+  async createContact(contact: Omit<ContactDTO, 'id' | 'category_name'>) {
+    return this.httpClient.post({
+      path: '/contacts',
+      options: {
+        body: JSON.stringify(contact),
+      },
+    })
   }
 }
 

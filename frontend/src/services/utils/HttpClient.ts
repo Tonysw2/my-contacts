@@ -8,10 +8,31 @@ export class HttpClient {
     this.baseUrl = baseUrl
   }
 
-  async get(path: string) {
+  private async makeRequest({
+    path,
+    options,
+  }: {
+    path: string
+    options: RequestInit
+  }) {
     await delay(500)
 
-    const res = await fetch(`${this.baseUrl}${path}`)
+    const headers = new Headers()
+
+    if (options.body) {
+      headers.append('Content-Type', 'application/json')
+    }
+
+    if (options.headers && typeof options.headers === 'object') {
+      Object.entries(options.headers).forEach(([name, value]) =>
+        headers.append(name, value),
+      )
+    }
+
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      ...options,
+      headers,
+    })
 
     let body = null
     const contentType = res.headers.get('content-type')
@@ -24,5 +45,13 @@ export class HttpClient {
     }
 
     throw new APIError(res, body)
+  }
+
+  get({ path, options }: { path: string; options?: RequestInit }) {
+    return this.makeRequest({ path, options: { method: 'GET', ...options } })
+  }
+
+  post({ path, options }: { path: string; options?: RequestInit }) {
+    return this.makeRequest({ path, options: { method: 'POST', ...options } })
   }
 }
