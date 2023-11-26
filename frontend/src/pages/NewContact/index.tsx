@@ -9,9 +9,7 @@ export function NewContact() {
     formData: Omit<ContactDTO, 'id' | 'category_name'>,
   ) {
     try {
-      const res = await ContactsService.createContact(formData)
-      console.log(res)
-
+      await ContactsService.createContact(formData)
       toast({ text: 'deu bom', variant: 'success' })
     } catch (error) {
       console.log(error)
