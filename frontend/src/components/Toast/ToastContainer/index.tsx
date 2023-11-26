@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ToastMessage } from '../ToastMessage'
 import { Container } from './styles'
 import { ToastDTO } from '../../../dtos/ToastDTO'
@@ -9,11 +9,11 @@ export function ToastContainer() {
 
   useEffect(() => {
     function handleAddToast(event: Omit<ToastDTO, 'id'>) {
-      const { text, variant } = event
+      const { text, variant, duration } = event
 
       setMessages((state) => [
         ...state,
-        { id: String(Math.random()), variant, text },
+        { id: String(Math.random()), variant, text, duration },
       ])
     }
 
@@ -24,9 +24,9 @@ export function ToastContainer() {
     }
   }, [])
 
-  function handleRemoveMessage(id: string) {
+  const handleRemoveMessage = useCallback((id: string) => {
     setMessages((state) => state.filter((message) => message.id !== id))
-  }
+  }, [])
 
   return (
     <Container>
