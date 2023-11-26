@@ -1,17 +1,23 @@
 import CheckSVG from '../../../assets/icons/check-circle.svg'
 import XCircleSVG from '../../../assets/icons/x-circle.svg'
-import { Container, ContainerStyleProps } from './styles'
+import { ToastDTO } from '../../../dtos/ToastDTO'
+import { Container } from './styles'
 
-type Props = ContainerStyleProps & {
-  text: string
+type Props = {
+  message: ToastDTO
+  onRemoveMessage: (id: string) => void
 }
 
-export function ToastMessage({ text, $variant = 'default' }: Props) {
+export function ToastMessage({ message, onRemoveMessage }: Props) {
+  function handleRemoveToast() {
+    onRemoveMessage(message.id)
+  }
+
   return (
-    <Container $variant={$variant}>
-      {$variant === 'success' && <img src={CheckSVG} />}
-      {$variant === 'danger' && <img src={XCircleSVG} />}
-      <strong>{text}</strong>
+    <Container $variant={message.variant} onClick={handleRemoveToast}>
+      {message.variant === 'success' && <img src={CheckSVG} />}
+      {message.variant === 'danger' && <img src={XCircleSVG} />}
+      <strong>{message.text}</strong>
     </Container>
   )
 }

@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import { ToastVariants } from '../../../dtos/ToastDTO'
 
-export type ContainerStyleProps = {
+type ContainerStyleProps = {
   $variant?: ToastVariants
 }
 
 export const Container = styled.div<ContainerStyleProps>`
+  cursor: pointer;
   padding: 1.6rem 3.2rem;
 
   display: flex;
