@@ -42,7 +42,6 @@ export function Home() {
   const [contactBeingDeleted, setContactBeingDeleted] = useState<ContactDTO>(
     {} as ContactDTO,
   )
-  console.log(contactBeingDeleted)
 
   const filteredContacts = useMemo(
     () =>
