@@ -1,18 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { ContactForm } from '../../components/ContactForm'
+import { ContactForm, ContactFormRef } from '../../components/ContactForm'
 import { Loader } from '../../components/Loader'
 import { PageHeader } from '../../components/PageHeader'
 import { ContactDTO } from '../../dtos/ContactDTO'
 import ContactsService from '../../services/ContactsService'
 import { toast } from '../../utils/toast'
 
-type ContactFormHandle = {
-  setCurrentFieldValues: (contact: ContactDTO) => void
-}
-
 export function EditContact() {
-  const contactFormRef = useRef<ContactFormHandle | null>(null)
+  const contactFormRef = useRef<ContactFormRef | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [contactName, setContactName] = useState('')
 

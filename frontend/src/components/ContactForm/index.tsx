@@ -19,8 +19,9 @@ import { Select } from '../Select'
 import { Spinner } from '../Spinner'
 import { ButtonContainer, Form } from './styles'
 
-type ContactFormHandle = {
+export type ContactFormRef = {
   setCurrentFieldValues: (contact: ContactDTO) => void
+  resetFields: () => void
 }
 
 type Props = {
@@ -30,7 +31,7 @@ type Props = {
   ) => Promise<void>
 }
 
-export const ContactForm = forwardRef<ContactFormHandle, Props>(
+export const ContactForm = forwardRef<ContactFormRef, Props>(
   function ContactForm({ onSubmit, buttonLabel }, ref) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -50,6 +51,13 @@ export const ContactForm = forwardRef<ContactFormHandle, Props>(
           setEmail(contact.email ?? '')
           setPhone(formatPhone(contact.phone) ?? '')
           setCategoryId(contact.category_id ?? '')
+        },
+
+        resetFields() {
+          setName('')
+          setEmail('')
+          setPhone('')
+          setCategoryId('')
         },
       }),
       [],
@@ -72,6 +80,7 @@ export const ContactForm = forwardRef<ContactFormHandle, Props>(
 
     async function handleSubmit(event: FormEvent) {
       event.preventDefault()
+
       setIsSubmitting(true)
       await onSubmit({ name, email, phone, category_id: categoryId })
       setIsSubmitting(false)
