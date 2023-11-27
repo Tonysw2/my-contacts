@@ -10,10 +10,13 @@ export function NewContact() {
   ) {
     try {
       await ContactsService.createContact(formData)
-      toast({ text: 'deu bom', variant: 'success' })
+
+      toast({ text: 'Contato criado com sucesso!', variant: 'success' })
     } catch (error) {
-      console.log(error)
-      toast({ text: 'deu ruim', variant: 'danger' })
+      toast({
+        text: 'Ocorreu um erro ao criar um novo contato.',
+        variant: 'danger',
+      })
     }
   }
 
