@@ -5,14 +5,14 @@ export const Overlay = styled.div`
   align-items: center;
   justify-content: center;
 
-  position: absolute;
+  position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(5px);
 `
 
 type ContainerStyleProps = {
-  danger?: boolean
+  $danger?: boolean
 }
 
 export const Container = styled.div<ContainerStyleProps>`
@@ -27,13 +27,13 @@ export const Container = styled.div<ContainerStyleProps>`
   & > h1 {
     font-size: 2.2rem;
     color: ${(props) =>
-      props.danger
+      props.$danger
         ? props.theme.colors.danger.main
         : props.theme.colors.gray['500']};
   }
 
-  & > p {
-    margin-top: 0.8rem;
+  .modal-body {
+    margin-top: 1.6rem;
   }
 `
 
@@ -51,5 +51,9 @@ export const Footer = styled.footer`
     background-color: transparent;
 
     color: ${(props) => props.theme.colors.gray['300']};
+
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 `

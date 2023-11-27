@@ -1,6 +1,11 @@
 import { APIError } from '../../errors/APIError'
 import { delay } from '../../utils/delay'
 
+type HttpClientParams = {
+  path: string
+  options?: RequestInit
+}
+
 export class HttpClient {
   private baseUrl: string
 
@@ -47,15 +52,19 @@ export class HttpClient {
     throw new APIError(res, body)
   }
 
-  get({ path, options }: { path: string; options?: RequestInit }) {
+  get({ path, options }: HttpClientParams) {
     return this.makeRequest({ path, options: { method: 'GET', ...options } })
   }
 
-  post({ path, options }: { path: string; options?: RequestInit }) {
+  post({ path, options }: HttpClientParams) {
     return this.makeRequest({ path, options: { method: 'POST', ...options } })
   }
 
-  put({ path, options }: { path: string; options?: RequestInit }) {
+  put({ path, options }: HttpClientParams) {
     return this.makeRequest({ path, options: { method: 'PUT', ...options } })
+  }
+
+  delete({ path, options }: HttpClientParams) {
+    return this.makeRequest({ path, options: { method: 'DELETE', ...options } })
   }
 }

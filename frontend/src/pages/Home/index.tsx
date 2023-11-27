@@ -1,17 +1,24 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+
 import EmptyBoxSVG from '../../assets/empty-box.svg'
 import ArrowSVG from '../../assets/icons/arrow.svg'
 import EditSVG from '../../assets/icons/edit.svg'
 import DeleteSVG from '../../assets/icons/trash.svg'
 import MagnifySVG from '../../assets/magnifier-question.svg'
 import SadSVG from '../../assets/sad.svg'
+
 import { Button } from '../../components/Button'
 import { Input } from '../../components/Input'
 import { Loader } from '../../components/Loader'
+import { Modal } from '../../components/Modal'
+
 import { ContactDTO } from '../../dtos/ContactDTO'
+
 import ContactsService from '../../services/ContactsService'
+
 import { formatPhone } from '../../utils/formatPhone'
+
 import {
   Card,
   Container,
@@ -22,13 +29,20 @@ import {
   ListContainer,
   SearchNotFoundContainer,
 } from './styles'
+import { toast } from '../../utils/toast'
 
 export function Home() {
+  const [hasError, setHasError] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
   const [contacts, setContacts] = useState<ContactDTO[]>([])
   const [orderBy, setOrderBy] = useState<'asc' | 'desc'>('asc')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [hasError, setHasError] = useState(false)
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false)
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+  const [contactBeingDeleted, setContactBeingDeleted] = useState<ContactDTO>(
+    {} as ContactDTO,
+  )
+  console.log(contactBeingDeleted)
 
   const filteredContacts = useMemo(
     () =>
@@ -67,9 +81,50 @@ export function Home() {
     setSearchTerm(event.target.value)
   }
 
+  function handleDeleteContact(contact: ContactDTO) {
+    setIsDeleteModalVisible(true)
+    setContactBeingDeleted(contact)
+  }
+
+  function handleCloseDeleteModal() {
+    setIsDeleteModalVisible(false)
+    setContactBeingDeleted({} as ContactDTO)
+  }
+
+  async function handleConfirmDeleteContact() {
+    try {
+      setIsLoadingDelete(true)
+      await ContactsService.deleteContact(contactBeingDeleted.id)
+      setContacts((state) =>
+        state.filter((contact) => contact.id !== contactBeingDeleted.id),
+      )
+      handleCloseDeleteModal()
+      toast({ text: 'Contato deletado com sucesso!', variant: 'success' })
+    } catch {
+      toast({
+        text: 'Ocorreu um erro ao deletar o contato.',
+        variant: 'danger',
+      })
+    } finally {
+      setIsLoadingDelete(false)
+    }
+  }
+
   return (
     <Container>
       <Loader isLoading={isLoading} />
+
+      <Modal
+        danger
+        confirmLabel="Deletar"
+        isLoading={isLoadingDelete}
+        visible={isDeleteModalVisible}
+        onCancel={handleCloseDeleteModal}
+        onConfirm={handleConfirmDeleteContact}
+        title={`Tem certeza que deseja remover o contato ”${contactBeingDeleted.name}”?`}
+      >
+        <p>Esta ação não poderá ser desfeita.</p>
+      </Modal>
 
       {!hasError && contacts.length > 0 && (
         <Input
@@ -158,7 +213,10 @@ export function Home() {
                   <Link to={`/edit/${contact.id}`}>
                     <img alt="Edit" src={EditSVG} />
                   </Link>
-                  <button type="button">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteContact(contact)}
+                  >
                     <img alt="Delete" src={DeleteSVG} />
                   </button>
                 </div>

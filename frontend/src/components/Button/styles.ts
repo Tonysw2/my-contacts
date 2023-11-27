@@ -21,11 +21,11 @@ export const StyledButton = styled.button<ButtonStyleProps>`
   color: ${({ theme }) => theme.colors.gray['100']};
   transition: background 0.2s ease-in;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.primary.light};
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.primary.dark};
   }
 
@@ -39,11 +39,11 @@ export const StyledButton = styled.button<ButtonStyleProps>`
     css`
       background-color: ${props.theme.colors.danger.main};
 
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: ${props.theme.colors.danger.light};
       }
 
-      &:active {
+      &:active:not(:disabled) {
         background-color: ${props.theme.colors.danger.dark};
       }
     `}
