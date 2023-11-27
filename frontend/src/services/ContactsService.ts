@@ -8,13 +8,26 @@ class ContactsService {
     this.httpClient = new HttpClient('http://localhost:3001')
   }
 
-  async listContacts(orderBy = 'asc') {
+  listContacts(orderBy = 'asc') {
     return this.httpClient.get({ path: `/contacts?orderBy=${orderBy}` })
   }
 
-  async createContact(contact: Omit<ContactDTO, 'id' | 'category_name'>) {
+  getContactById(id: string) {
+    return this.httpClient.get({ path: `/contacts/${id}` })
+  }
+
+  createContact(contact: Omit<ContactDTO, 'id' | 'category_name'>) {
     return this.httpClient.post({
       path: '/contacts',
+      options: {
+        body: JSON.stringify(contact),
+      },
+    })
+  }
+
+  updateContact(id: string, contact: Omit<ContactDTO, 'id' | 'category_name'>) {
+    return this.httpClient.put({
+      path: `/contacts/${id}`,
       options: {
         body: JSON.stringify(contact),
       },

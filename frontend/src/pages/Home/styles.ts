@@ -147,6 +147,10 @@ export const Card = styled.div`
       align-items: center;
       gap: 0.8rem;
 
+      & > strong {
+        color: ${({ theme }) => theme.colors.gray['500']};
+      }
+
       & > small {
         padding: 0.2rem 0.6rem;
 

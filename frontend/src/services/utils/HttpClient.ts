@@ -54,4 +54,8 @@ export class HttpClient {
   post({ path, options }: { path: string; options?: RequestInit }) {
     return this.makeRequest({ path, options: { method: 'POST', ...options } })
   }
+
+  put({ path, options }: { path: string; options?: RequestInit }) {
+    return this.makeRequest({ path, options: { method: 'PUT', ...options } })
+  }
 }
