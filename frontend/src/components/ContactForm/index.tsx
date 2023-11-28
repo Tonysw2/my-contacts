@@ -1,24 +1,16 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react'
-import { CategoryDTO } from '../../dtos/CategoryDTO'
-import { ContactDTO } from '../../dtos/ContactDTO'
-import { useErrors } from '../../hooks/useErrors'
-import CategoriesService from '../../services/CategoriesService'
-import { formatPhone } from '../../utils/formatPhone'
-import { isEmailValid } from '../../utils/isEmailValid'
+import { forwardRef } from 'react'
+
+import { FormDataType } from '../../pages/NewContact/useNewContact'
 import { Button } from '../Button'
 import { FormGroup } from '../FormGroup'
 import { Input } from '../Input'
 import { Select } from '../Select'
 import { Spinner } from '../Spinner'
+
+import { ContactDTO } from '../../dtos/ContactDTO'
+
 import { ButtonContainer, Form } from './styles'
-import { FormDataType } from '../../pages/NewContact'
+import { useContactForm } from './useContactForm'
 
 export type ContactFormRef = {
   setCurrentFieldValues: (contact: ContactDTO) => void
@@ -32,85 +24,22 @@ type Props = {
 
 export const ContactForm = forwardRef<ContactFormRef, Props>(
   function ContactForm({ onSubmit, buttonLabel }, ref) {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [phone, setPhone] = useState('')
-    const [categoryId, setCategoryId] = useState('')
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [categories, setCategories] = useState<CategoryDTO[]>([])
-    const [isLoadingCategories, setIsLoadingCategories] = useState(true)
-    const { errors, setError, removeError, getErrorMessageByFiled } =
-      useErrors()
-    console.log(categoryId)
-
-    useImperativeHandle(
-      ref,
-      () => ({
-        setCurrentFieldValues(contact: ContactDTO) {
-          setName(contact.name ?? '')
-          setEmail(contact.email ?? '')
-          setPhone(formatPhone(contact.phone) ?? '')
-          setCategoryId(contact.category.id ?? '')
-        },
-
-        resetFields() {
-          setName('')
-          setEmail('')
-          setPhone('')
-          setCategoryId('')
-        },
-      }),
-      [],
-    )
-
-    useEffect(() => {
-      loadCategories()
-    }, [])
-
-    async function loadCategories() {
-      try {
-        setIsLoadingCategories(true)
-        const categoriesList = await CategoriesService.listCategories()
-        setCategories(categoriesList)
-      } catch {
-      } finally {
-        setIsLoadingCategories(false)
-      }
-    }
-
-    async function handleSubmit(event: FormEvent) {
-      event.preventDefault()
-
-      setIsSubmitting(true)
-      await onSubmit({ name, email, phone, categoryId })
-      setIsSubmitting(false)
-    }
-
-    function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
-      setName(event.target.value)
-
-      if (!event.target.value) {
-        setError({ field: 'name', message: 'O nome é obrigatório' })
-      } else {
-        removeError('name')
-      }
-    }
-
-    function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
-      setEmail(event.target.value)
-
-      if (event.target.value && !isEmailValid(event.target.value)) {
-        setError({ field: 'email', message: 'E-mail inválido' })
-      } else {
-        removeError('email')
-      }
-    }
-
-    function handlePhoneChange(event: ChangeEvent<HTMLInputElement>) {
-      setPhone(formatPhone(event.target.value))
-    }
-
-    const isFormValid = name && errors.length === 0
+    const {
+      name,
+      email,
+      phone,
+      categories,
+      categoryId,
+      isFormValid,
+      isSubmitting,
+      isLoadingCategories,
+      handleSubmit,
+      handleNameChange,
+      handleEmailChange,
+      handlePhoneChange,
+      handleCategoryChange,
+      getErrorMessageByFiled,
+    } = useContactForm(ref, onSubmit)
 
     return (
       <Form noValidate onSubmit={handleSubmit}>
@@ -154,7 +83,7 @@ export const ContactForm = forwardRef<ContactFormRef, Props>(
             value={categoryId}
             placeholder="Categoria"
             disabled={isLoadingCategories || isSubmitting}
-            onChange={(event) => setCategoryId(event.target.value)}
+            onChange={handleCategoryChange}
           >
             <option value="">Sem categoria</option>
 
