@@ -18,6 +18,7 @@ import { Input } from '../Input'
 import { Select } from '../Select'
 import { Spinner } from '../Spinner'
 import { ButtonContainer, Form } from './styles'
+import { FormDataType } from '../../pages/NewContact'
 
 export type ContactFormRef = {
   setCurrentFieldValues: (contact: ContactDTO) => void
@@ -26,9 +27,7 @@ export type ContactFormRef = {
 
 type Props = {
   buttonLabel: string
-  onSubmit: (
-    formData: Omit<ContactDTO, 'id' | 'category_name'>,
-  ) => Promise<void>
+  onSubmit: (formData: FormDataType) => Promise<void>
 }
 
 export const ContactForm = forwardRef<ContactFormRef, Props>(
@@ -42,6 +41,7 @@ export const ContactForm = forwardRef<ContactFormRef, Props>(
     const [isLoadingCategories, setIsLoadingCategories] = useState(true)
     const { errors, setError, removeError, getErrorMessageByFiled } =
       useErrors()
+    console.log(categoryId)
 
     useImperativeHandle(
       ref,
@@ -50,7 +50,7 @@ export const ContactForm = forwardRef<ContactFormRef, Props>(
           setName(contact.name ?? '')
           setEmail(contact.email ?? '')
           setPhone(formatPhone(contact.phone) ?? '')
-          setCategoryId(contact.category_id ?? '')
+          setCategoryId(contact.category.id ?? '')
         },
 
         resetFields() {
@@ -82,7 +82,7 @@ export const ContactForm = forwardRef<ContactFormRef, Props>(
       event.preventDefault()
 
       setIsSubmitting(true)
-      await onSubmit({ name, email, phone, category_id: categoryId })
+      await onSubmit({ name, email, phone, categoryId })
       setIsSubmitting(false)
     }
 

@@ -1,8 +1,9 @@
+import { CategoryDTO } from './CategoryDTO'
+
 export type ContactDTO = {
-  category_id: string
-  category_name: string
-  email: string
   id: string
   name: string
+  email: string
   phone: string
+  category: CategoryDTO
 }

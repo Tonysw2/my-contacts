@@ -1,5 +1,19 @@
-import { ContactDTO } from '../dtos/ContactDTO'
+import ContactMapper from './mappers/ContactMapper'
 import { HttpClient } from './utils/HttpClient'
+
+type CreateContactDataType = {
+  name: string
+  email: string
+  phone: string
+  categoryId: string
+}
+
+type UpdateContactDataType = {
+  name: string
+  email: string
+  phone: string
+  categoryId: string
+}
 
 class ContactsService {
   private httpClient: HttpClient
@@ -8,15 +22,23 @@ class ContactsService {
     this.httpClient = new HttpClient('http://localhost:3001')
   }
 
-  listContacts(orderBy = 'asc') {
-    return this.httpClient.get({ path: `/contacts?orderBy=${orderBy}` })
+  async listContacts(orderBy = 'asc') {
+    const contacts = await this.httpClient.get({
+      path: `/contacts?orderBy=${orderBy}`,
+    })
+
+    return contacts.map(ContactMapper.toDomain)
   }
 
-  getContactById(id: string) {
-    return this.httpClient.get({ path: `/contacts/${id}` })
+  async getContactById(id: string) {
+    const contact = await this.httpClient.get({ path: `/contacts/${id}` })
+
+    return ContactMapper.toDomain(contact)
   }
 
-  createContact(contact: Omit<ContactDTO, 'id' | 'category_name'>) {
+  createContact(contactData: CreateContactDataType) {
+    const contact = ContactMapper.topPersistence(contactData)
+
     return this.httpClient.post({
       path: '/contacts',
       options: {
@@ -25,7 +47,9 @@ class ContactsService {
     })
   }
 
-  updateContact(id: string, contact: Omit<ContactDTO, 'id' | 'category_name'>) {
+  updateContact(id: string, contactData: UpdateContactDataType) {
+    const contact = ContactMapper.topPersistence(contactData)
+
     return this.httpClient.put({
       path: `/contacts/${id}`,
       options: {

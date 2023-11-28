@@ -5,12 +5,14 @@ import { ContactDTO } from '../../dtos/ContactDTO'
 import ContactsService from '../../services/ContactsService'
 import { toast } from '../../utils/toast'
 
+export type FormDataType = Omit<ContactDTO, 'id' | 'category'> & {
+  categoryId: string
+}
+
 export function NewContact() {
   const contactFormRef = useRef<ContactFormRef | null>(null)
 
-  async function handleSubmit(
-    formData: Omit<ContactDTO, 'id' | 'category_name'>,
-  ) {
+  async function handleSubmit(formData: FormDataType) {
     try {
       await ContactsService.createContact(formData)
       contactFormRef.current?.resetFields()

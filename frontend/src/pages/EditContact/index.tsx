@@ -8,6 +8,8 @@ import { useSafeAsyncAction } from '../../hooks/useSafeAsyncAction'
 import ContactsService from '../../services/ContactsService'
 import { toast } from '../../utils/toast'
 
+type FormDataType = Omit<ContactDTO, 'id' | 'category'> & { categoryId: string }
+
 export function EditContact() {
   const safeAsyncAction = useSafeAsyncAction()
   const [isLoading, setIsLoading] = useState(true)
@@ -38,9 +40,7 @@ export function EditContact() {
     loadContact()
   }, [])
 
-  async function handleSubmit(
-    formData: Omit<ContactDTO, 'id' | 'category_name'>,
-  ) {
+  async function handleSubmit(formData: FormDataType) {
     try {
       const updatedContactData: ContactDTO =
         await ContactsService.updateContact(id, formData)
