@@ -31,7 +31,6 @@ export function useContactForm(
   const [categories, setCategories] = useState<CategoryDTO[]>([])
   const [isLoadingCategories, setIsLoadingCategories] = useState(true)
   const { errors, setError, removeError, getErrorMessageByFiled } = useErrors()
-  console.log(categoryId)
 
   useImperativeHandle(
     ref,
