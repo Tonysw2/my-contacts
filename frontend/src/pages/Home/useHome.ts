@@ -62,7 +62,6 @@ export function useHome() {
 
   function handleCloseDeleteModal() {
     setIsDeleteModalVisible(false)
-    setContactBeingDeleted({} as ContactDTO)
   }
 
   async function handleConfirmDeleteContact() {
