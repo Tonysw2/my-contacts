@@ -1,15 +1,25 @@
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
+
 import CheckSVG from '../../../assets/icons/check-circle.svg'
 import XCircleSVG from '../../../assets/icons/x-circle.svg'
+
 import { ToastDTO } from '../../../dtos/ToastDTO'
+
 import { Container } from './styles'
 
 type Props = {
   message: ToastDTO
+  isLeaving: boolean
+  animatedRef: React.MutableRefObject<HTMLDivElement | null>
   onRemoveMessage: (id: string) => void
 }
 
-export function ToastMessage({ message, onRemoveMessage }: Props) {
+function ToastMessage({
+  message,
+  isLeaving,
+  onRemoveMessage,
+  animatedRef,
+}: Props) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       onRemoveMessage(message.id)
@@ -26,9 +36,11 @@ export function ToastMessage({ message, onRemoveMessage }: Props) {
 
   return (
     <Container
+      role="button"
+      ref={animatedRef}
+      $isLeaving={isLeaving}
       $variant={message.variant}
       onClick={handleRemoveToast}
-      role="button"
     >
       {message.variant === 'success' && <img src={CheckSVG} />}
       {message.variant === 'danger' && <img src={XCircleSVG} />}
@@ -36,3 +48,7 @@ export function ToastMessage({ message, onRemoveMessage }: Props) {
     </Container>
   )
 }
+
+const MemoizedToastMessage = memo(ToastMessage)
+
+export { MemoizedToastMessage as ToastMessage }

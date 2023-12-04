@@ -1,11 +1,21 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ToastMessage } from '../ToastMessage'
-import { Container } from './styles'
+import { useEffect } from 'react'
+
 import { ToastDTO } from '../../../dtos/ToastDTO'
+
+import { useAnimatedList } from '../../../hooks/useAnimatedList'
+
 import { toastEventManager } from '../../../utils/toast'
 
+import { ToastMessage } from '../ToastMessage'
+
+import { Container } from './styles'
+
 export function ToastContainer() {
-  const [messages, setMessages] = useState<ToastDTO[]>([])
+  const {
+    renderList,
+    handleRemoveItem,
+    setItems: setMessages,
+  } = useAnimatedList<HTMLDivElement>()
 
   useEffect(() => {
     function handleAddToast(event: Omit<ToastDTO, 'id'>) {
@@ -22,19 +32,17 @@ export function ToastContainer() {
     return () => {
       toastEventManager.removeListener('addToast', handleAddToast)
     }
-  }, [])
-
-  const handleRemoveMessage = useCallback((id: string) => {
-    setMessages((state) => state.filter((message) => message.id !== id))
-  }, [])
+  }, [setMessages])
 
   return (
     <Container>
-      {messages.map((message) => (
+      {renderList((message, { isLeaving, animatedRef }) => (
         <ToastMessage
           key={message.id}
           message={message}
-          onRemoveMessage={handleRemoveMessage}
+          isLeaving={isLeaving}
+          animatedRef={animatedRef}
+          onRemoveMessage={handleRemoveItem}
         />
       ))}
     </Container>
