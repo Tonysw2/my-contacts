@@ -1,5 +1,4 @@
 import { APIError } from '../../errors/APIError'
-import { delay } from '../../utils/delay'
 
 type HttpClientParams = {
   path: string
@@ -20,8 +19,6 @@ export class HttpClient {
     path: string
     options: RequestInit
   }) {
-    await delay(500)
-
     const headers = new Headers()
 
     if (options.body) {

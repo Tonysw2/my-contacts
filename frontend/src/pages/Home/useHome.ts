@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import {
+  ChangeEvent,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { ContactDTO } from '../../dtos/ContactDTO'
 
 import ContactsService from '../../services/ContactsService'
@@ -8,7 +15,6 @@ import { toast } from '../../utils/toast'
 export function useHome() {
   const [hasError, setHasError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
   const [contacts, setContacts] = useState<ContactDTO[]>([])
   const [orderBy, setOrderBy] = useState<'asc' | 'desc'>('asc')
   const [isLoadingDelete, setIsLoadingDelete] = useState(false)
@@ -17,12 +23,17 @@ export function useHome() {
     {} as ContactDTO,
   )
 
+  const [searchTerm, setSearchTerm] = useState('')
+  const deferredSearchTerm = useDeferredValue(searchTerm)
+
   const filteredContacts = useMemo(
     () =>
       contacts.filter((contact) =>
-        contact.name.toLocaleLowerCase().includes(searchTerm.toLowerCase()),
+        contact.name
+          .toLocaleLowerCase()
+          .includes(deferredSearchTerm.toLowerCase()),
       ),
-    [contacts, searchTerm],
+    [contacts, deferredSearchTerm],
   )
 
   const fetchContacts = useCallback(async () => {
@@ -39,13 +50,18 @@ export function useHome() {
     }
   }, [orderBy])
 
+  const handleToggleOrderBy = useCallback(() => {
+    setOrderBy((state) => (state === 'asc' ? 'desc' : 'asc'))
+  }, [])
+
+  const handleDeleteContact = useCallback((contact: ContactDTO) => {
+    setIsDeleteModalVisible(true)
+    setContactBeingDeleted(contact)
+  }, [])
+
   useEffect(() => {
     fetchContacts()
   }, [fetchContacts])
-
-  function handleToggleOrderBy() {
-    setOrderBy((state) => (state === 'asc' ? 'desc' : 'asc'))
-  }
 
   function handleTryAgain() {
     fetchContacts()
@@ -53,11 +69,6 @@ export function useHome() {
 
   function handleChangeSearchTerm(event: ChangeEvent<HTMLInputElement>) {
     setSearchTerm(event.target.value)
-  }
-
-  function handleDeleteContact(contact: ContactDTO) {
-    setIsDeleteModalVisible(true)
-    setContactBeingDeleted(contact)
   }
 
   function handleCloseDeleteModal() {

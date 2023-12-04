@@ -8,6 +8,7 @@ import DeleteSVG from '../../../../assets/icons/trash.svg'
 
 import { formatPhone } from '../../../../utils/formatPhone'
 
+import { memo } from 'react'
 import { ContactDTO } from '../../../../dtos/ContactDTO'
 
 type Props = {
@@ -17,7 +18,7 @@ type Props = {
   onDeleteContact: (contact: ContactDTO) => void
 }
 
-export function ContactsList({
+function ContactsList({
   orderBy,
   filteredContacts,
   onToggleOrderBy,
@@ -61,3 +62,7 @@ export function ContactsList({
     </Container>
   )
 }
+
+const MemoizedContactList = memo(ContactsList)
+
+export { MemoizedContactList as ContactsList }
