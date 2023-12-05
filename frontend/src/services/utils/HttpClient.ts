@@ -50,7 +50,10 @@ export class HttpClient {
   }
 
   get({ path, options }: HttpClientParams) {
-    return this.makeRequest({ path, options: { method: 'GET', ...options } })
+    return this.makeRequest({
+      path,
+      options: { method: 'GET', ...options },
+    })
   }
 
   post({ path, options }: HttpClientParams) {

@@ -8,8 +8,11 @@ class CategoriesService {
     this.httpClient = new HttpClient('http://localhost:3001')
   }
 
-  async listCategories() {
-    const categories = await this.httpClient.get({ path: '/categories' })
+  async listCategories(signal: AbortSignal) {
+    const categories = await this.httpClient.get({
+      path: '/categories',
+      options: { signal },
+    })
 
     return categories.map(CategoryMapper.toDomain)
   }

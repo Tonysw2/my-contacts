@@ -53,13 +53,19 @@ export function useContactForm(
   )
 
   useEffect(() => {
-    loadCategories()
+    const controller = new AbortController()
+
+    loadCategories(controller.signal)
+
+    return () => {
+      controller.abort()
+    }
   }, [])
 
-  async function loadCategories() {
+  async function loadCategories(signal: AbortSignal) {
     try {
       setIsLoadingCategories(true)
-      const categoriesList = await CategoriesService.listCategories()
+      const categoriesList = await CategoriesService.listCategories(signal)
       setCategories(categoriesList)
     } catch {
     } finally {

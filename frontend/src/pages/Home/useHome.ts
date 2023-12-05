@@ -36,19 +36,26 @@ export function useHome() {
     [contacts, deferredSearchTerm],
   )
 
-  const fetchContacts = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const contactsList = await ContactsService.listContacts(orderBy)
-      setHasError(false)
-      setContacts(contactsList)
-    } catch (error) {
-      setHasError(true)
-      setContacts([])
-    } finally {
-      setIsLoading(false)
-    }
-  }, [orderBy])
+  const fetchContacts = useCallback(
+    async (signal: AbortSignal) => {
+      try {
+        setIsLoading(true)
+        const contactsList = await ContactsService.listContacts(orderBy, signal)
+        setHasError(false)
+        setContacts(contactsList)
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return
+        }
+
+        setHasError(true)
+        setContacts([])
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [orderBy],
+  )
 
   const handleToggleOrderBy = useCallback(() => {
     setOrderBy((state) => (state === 'asc' ? 'desc' : 'asc'))
@@ -60,11 +67,18 @@ export function useHome() {
   }, [])
 
   useEffect(() => {
-    fetchContacts()
+    const controller = new AbortController()
+
+    fetchContacts(controller.signal)
+
+    return () => {
+      controller.abort()
+    }
   }, [fetchContacts])
 
   function handleTryAgain() {
-    fetchContacts()
+    const controller = new AbortController()
+    fetchContacts(controller.signal)
   }
 
   function handleChangeSearchTerm(event: ChangeEvent<HTMLInputElement>) {
