@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { ContactFormRef } from '../../components/ContactForm'
 
@@ -20,7 +20,8 @@ export function useEditContact() {
   const contactFormRef = useRef<ContactFormRef | null>(null)
 
   const { id } = useParams() as { id: string }
-  const history = useHistory()
+  const navigate = useNavigate()
+  console.log(navigate)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -40,7 +41,7 @@ export function useEditContact() {
       } catch (error) {
         if (!(error instanceof DOMException && error.name === 'AbortError')) {
           safeAsyncAction(() => {
-            history.push('/')
+            navigate('/', { replace: true })
             toast({ text: 'Contato não encontrado.', variant: 'danger' })
           })
         }
