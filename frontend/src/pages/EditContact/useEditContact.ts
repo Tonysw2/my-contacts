@@ -21,7 +21,6 @@ export function useEditContact() {
 
   const { id } = useParams() as { id: string }
   const navigate = useNavigate()
-  console.log(navigate)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -57,6 +56,7 @@ export function useEditContact() {
 
   async function handleSubmit(formData: FormDataType) {
     try {
+      console.log(formData)
       const updatedContactData: ContactDTO =
         await ContactsService.updateContact(id, formData)
 

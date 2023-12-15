@@ -16,8 +16,8 @@ class ContactMapper {
       email: data.email,
       phone: data.phone,
       category: {
-        id: data.category_id,
-        name: data.category_name,
+        id: data.category?.id,
+        name: data.category?.name,
       },
     }
   }
