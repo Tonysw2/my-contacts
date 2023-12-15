@@ -82,7 +82,7 @@ class ContactController {
     }
 
     const contact = await ContactsRepository.update(id, {
-      name, email, phone, category_id: category_id || null,
+      name, email: email || null, phone, category_id: category_id || null,
     });
 
     return res.json(contact);

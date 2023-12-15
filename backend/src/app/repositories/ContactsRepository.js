@@ -1,58 +1,113 @@
-const db = require('../../database');
+const { prisma } = require('../../../prisma');
 
 class ContactsRepository {
-  async findAll(orderBy = 'ASC') {
-    const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+  async findAll(orderBy = 'asc') {
+    const direction = orderBy.toUpperCase() === 'desc' ? 'desc' : 'asc';
 
-    const rows = await db.query(`
-      SELECT contacts.*, categories.name as category_name 
-      FROM contacts
-      LEFT JOIN categories ON categories.id = contacts.category_id 
-      ORDER BY contacts.name ${direction}
-    `);
-    return rows;
+    const contacts = await prisma.contact.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        category: true,
+      },
+
+      orderBy: {
+        name: direction,
+      },
+    });
+
+    return contacts;
   }
 
   async findById(id) {
-    const [row] = await db.query(`
-      SELECT contacts.*, categories.name AS category_name
-      FROM contacts 
-      LEFT JOIN categories ON categories.id = contacts.category_id
-      WHERE contacts.id = $1
-    `, [id]);
-    return row;
+    const contact = await prisma.contact.findUnique({
+      where: {
+        id,
+      },
+
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        category: true,
+      },
+    });
+
+    return contact;
   }
 
   async findByEmail(email) {
-    const [row] = await db.query('SELECT * FROM contacts WHERE email = $1', [email]);
-    return row;
+    const contact = await prisma.contact.findUnique({
+      where: {
+        email,
+      },
+
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        category: true,
+      },
+    });
+
+    return contact;
   }
 
   async create({
     name, email, phone, category_id,
   }) {
-    const [row] = await db.query(`
-      INSERT INTO contacts(name, email, phone, category_id) 
-      VALUES ($1, $2, $3, $4)
-      RETURNING *
-    `, [name, email, phone, category_id]);
-    return row;
+    const contact = await prisma.contact.create({
+      data: {
+        name, email, phone, category_id,
+      },
+
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        category: true,
+      },
+    });
+
+    return contact;
   }
 
   async update(id, {
     name, email, phone, category_id,
   }) {
-    const [row] = await db.query(`
-      UPDATE contacts
-      SET name = $1, email = $2, phone = $3, category_id = $4
-      WHERE id = $5
-      RETURNING *
-    `, [name, email, phone, category_id, id]);
-    return row;
+    const contact = await prisma.contact.update({
+      where: {
+        id,
+      },
+
+      data: {
+        name, email, phone, category_id,
+      },
+
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        category: true,
+      },
+    });
+
+    return contact;
   }
 
   async delete(id) {
-    const deleteOp = await db.query('DELETE FROM contacts WHERE id = $1', [id]);
+    const deleteOp = await prisma.contact.delete({
+      where: {
+        id,
+      },
+    });
+
     return deleteOp;
   }
 }
