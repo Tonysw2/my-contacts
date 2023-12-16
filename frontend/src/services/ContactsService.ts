@@ -20,7 +20,7 @@ class ContactsService {
 
   constructor() {
     this.httpClient = new HttpClient(
-      process.env.VITE_APP_BASE_URL ?? 'http://localhost:3001',
+      import.meta.env.VITE_APP_BASE_URL ?? 'http://localhost:3001',
     )
   }
 
