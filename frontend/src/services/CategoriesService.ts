@@ -5,7 +5,9 @@ class CategoriesService {
   private httpClient: HttpClient
 
   constructor() {
-    this.httpClient = new HttpClient(process.env.VITE_APP_BASE_URL)
+    this.httpClient = new HttpClient(
+      process.env.VITE_APP_BASE_URL ?? 'http://localhost:3001',
+    )
   }
 
   async listCategories(signal: AbortSignal) {
