@@ -4,7 +4,8 @@
   "description": "API to store contacts",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "deploy": "npm install && npx prisma migrate deploy && npm run dev"
   },
   "author": "Anthony Ribeiro",
   "license": "MIT",
